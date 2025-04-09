@@ -1,11 +1,26 @@
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Scanner;
 
-public class BST {
+public class RotacaoAvl {
 
     private Node root;
     private int size;
+
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        String[] in = sc.nextLine().split(" ");
+        int[] nums = new int[in.length];
+
+        RotacaoAvl avl = new RotacaoAvl();
+
+        for (int i = 0; i < in.length; i++){
+            avl.add(Integer.parseInt(in[i]));
+        }
+
+        
+    }
 
     public boolean isAVL() {
         return Math.abs(balance(root)) <= 1;
