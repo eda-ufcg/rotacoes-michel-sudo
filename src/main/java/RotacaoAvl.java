@@ -11,15 +11,15 @@ public class RotacaoAvl {
     public static void main(String[] args){
         Scanner sc = new Scanner(System.in);
         String[] in = sc.nextLine().split(" ");
-        int[] nums = new int[in.length];
+        sc.close();
 
         RotacaoAvl avl = new RotacaoAvl();
-
+        
         for (int i = 0; i < in.length; i++){
             avl.add(Integer.parseInt(in[i]));
         }
 
-        
+
     }
 
     public boolean isAVL() {
@@ -48,13 +48,64 @@ public class RotacaoAvl {
         return height(node.left) - height(node.right);
     }
 
+    public boolean isLeftPending(Node node){
+        if (node == null) return false;
+        return height(node.left) > height(node.right);
+    }
+
+    public boolean isRightPending(Node node){
+        if (node == null) return false;
+        return height(node.left) < height(node.right);
+    }
+
+    public void assegureRotacao(Node newNode){
+        if(isAVL()) return;
+
+        Node parentNode = newNode.parent;
+        Node graNode = parentNode.parent;
+
+        if(isLeftPending(graNode) && parentNode.left == newNode){
+            rotateRight(graNode);
+        } else if (isLeftPending(graNode) && parentNode.right == newNode){
+            rotateLeft(parentNode);
+            rotateRight(graNode);
+        } else if (isRightPending(graNode) && parentNode.left == newNode){
+            rotateRight(parentNode);
+            rotateLeft(graNode);
+        } else if (isRightPending(graNode) && parentNode.right == newNode){
+            rotateLeft(graNode);
+        } 
+
+    }
+
     public void rotateLeft(Node node){
-        
+        Node parentNode = node.parent;
+
+        node.parent = node.right;
+        node.parent.parent = parentNode;
+        if (parentNode != null) parentNode.left = node.parent;
+        node.parent.left = node;
+
+        node.right = null;
+        if(node.value == this.root.value) this.root = node.parent;
+        System.out.println(String.format("rot_esq(%s)", node.value));
+        System.out.println(preOrder());        
+
     }
 
     public void rotateRight(Node node){
-        node.left.parent = node.parent;        
+        Node parentNode = node.parent;
+        
         node.parent = node.left;
+        node.parent.parent = parentNode;
+        if (parentNode != null) parentNode.right = node.parent;
+        node.parent.right = node;
+        
+        node.left = null;
+        if (node.value == this.root.value) this.root = node.parent;
+        System.out.println(String.format("rot_dir(%s)", node.value));
+        System.out.println(preOrder());        
+
     }
 
     /**
@@ -101,6 +152,7 @@ public class RotacaoAvl {
                         Node newNode = new Node(element);
                         aux.left = newNode;
                         newNode.parent = aux;
+                        assegureRotacao(newNode);
                         return;
                     }
                     
@@ -110,6 +162,7 @@ public class RotacaoAvl {
                         Node newNode = new Node(element);
                         aux.right = newNode;
                         newNode.parent = aux;
+                        assegureRotacao(newNode);
                         return;
                     }
                     
@@ -345,15 +398,17 @@ public class RotacaoAvl {
     /**
      * Percorre a árvore em pré-ordem.
      */
-    public void preOrder() {
-        preOrder(this.root);
+    public String preOrder() {
+        ArrayList<Integer> out = new ArrayList<Integer>();
+        preOrder(this.root, out);
+        return out.toString();
     }
 
-    private void preOrder(Node node) {
+    private void preOrder(Node node, ArrayList<Integer> out) {
         if (node != null) {
-            System.out.println(node.value);
-            preOrder(node.left);
-            preOrder(node.right);
+            out.add(node.value);
+            preOrder(node.left, out);
+            preOrder(node.right, out);
         }
     }
 

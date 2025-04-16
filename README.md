@@ -1,8 +1,8 @@
 # Identificação
 
-* Nome: 
-* Email (@ccc): 
-* Matrícula: 
+* Nome: Michel Elias dos Santos 
+* Email (@ccc): Michel.elias.santos@ccc.ufcg.edu.br
+* Matrícula: 123210483
 
 # Roteiro: isAVL
 
